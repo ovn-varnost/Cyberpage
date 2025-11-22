@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Varnostni nasvet</title>
+<style>
+  :root{
+    --matrix-green: #00ff00;
+    --matrix-dark: #0b0b0b;
+  }
+  html,body{
+    height:100%;
+    margin:0;
+    background:black;
+    font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, monospace;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+  }
+
+  canvas{
+    position:fixed;
+    inset:0;
+    display:block;
+    z-index:0;
+  }
+
+  .centerBox{
+    position:fixed;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    z-index:10;
+    width:90%;
+    max-width:1000px;
+    color:var(--matrix-green);
+    text-align:center;
+    padding:28px;
+    box-sizing:border-box;
+    line-height:1.45;
+    background: rgba(0,0,0,0.35);
+    border-radius:10px;
+    text-shadow: 0 0 10px rgba(0,255,0,0.6);
+  }
+
+  .centerBox p{
+    margin:0 0 18px 0;
+    font-weight:400;
+    font-size:44px;
+  }
+
+  .centerBox p.lead{
+    font-size:48px;
+    margin-bottom:22px;
+  }
+
+  .centerBox b{
+    font-weight:700;
+  }
+
+  .btn{
+    display:inline-block;
+    margin-top:6px;
+    font-size:34px;
+    padding:14px 34px;
+    border-radius:8px;
+    background:var(--matrix-green);
+    color:#000;
+    text-decoration:none;
+    font-weight:700;
+    box-shadow:0 0 18px rgba(0,255,0,0.25);
+  }
+  .btn:hover{ filter:brightness(.95); }
+
+  .below{
+    margin-top:18px;
+    font-size:22px;
+    color:var(--matrix-green);
+    opacity:0.95;
+  }
+
+  .social{
+    margin-top:10px;
+    font-size:20px;
+    color:var(--matrix-green);
+  }
+  .social a{
+    color:var(--matrix-green);
+    text-decoration:none;
+    font-weight:600;
+  }
+
+  @media (max-width:900px){
+    .centerBox p{ font-size:34px; }
+    .centerBox p.lead{ font-size:36px; }
+    .btn{ font-size:24px; padding:12px 26px; }
+    .below{ font-size:18px; }
+  }
+  @media (max-width:480px){
+    .centerBox{ padding:18px; }
+    .centerBox p{ font-size:20px; }
+    .centerBox p.lead{ font-size:22px; }
+    .btn{ font-size:18px; padding:10px 18px; }
+    .below{ font-size:16px; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="matrix"></canvas>
+
+<div class="centerBox">
+  <p class="lead">Ste pravkar skenirali naključno QR kodo na javnem mestu?</p>
+
+  <p>Tokrat je bil digitalni Božiček prijazen.</p>
+
+  <p>Če bi bila koda zlonamerna, bi lahko ravno zdaj na svoj telefon prenesli virus ali razkrili svoje osebne podatke.</p>
+
+  <p>V knjigi <b>Fizična in digitalna varnost</b> boste izvedeli, kako prepoznati takšne pasti in se jim učinkovito izogniti.</p>
+
+  <a class="btn" href="https://varnostni-nacrt.si/" target="_blank" rel="noopener noreferrer">Obišči stran</a>
+
+  <div class="below">
+    Sledi mi za več varnostnih trikov:
+    <div class="social">
+      Instagram: <a href="https://instagram.com/varnostninacrt" target="_blank">@varnostninacrt</a>
+      <br>
+      Facebook: <a href="https://facebook.com/varnostninacrt" target="_blank">@varnostninacrt</a>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const canvas = document.getElementById('matrix');
+  const ctx = canvas.getContext('2d', { alpha: true });
+  let width, height, columns, drops;
+  const letters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let fontSize = 20;
+
+  function resize(){
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+    fontSize = Math.max(16, Math.floor(Math.min(width, height) / 40));
+    columns = Math.floor(width / fontSize);
+    drops = new Array(columns).fill(1);
+    ctx.font = fontSize + 'px monospace';
+  }
+
+  window.addEventListener('resize', resize, { passive:true });
+  resize();
+
+  function draw(){
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.06)';
+    ctx.fillRect(0,0,width,height);
+
+    ctx.fillStyle = '#0F0';
+    ctx.font = fontSize + 'px monospace';
+
+    for(let i=0;i<drops.length;i++){
+      const char = letters.charAt(Math.floor(Math.random()*letters.length));
+      ctx.fillText(char, i*fontSize, drops[i]*fontSize);
+
+      if(drops[i]*fontSize > height && Math.random() > 0.975){
+        drops[i] = 0;
+      }
+      drops[i]++;
+    }
+
+    requestAnimationFrame(draw);
+  }
+
+  requestAnimationFrame(draw);
+})();
+</script>
+
+</body>
+</html>
